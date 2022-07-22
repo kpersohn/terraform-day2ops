@@ -40,6 +40,22 @@ resource "aws_autoscaling_group" "refresh" {
   }
 }
 
+resource "null_resource" "wait_for_refresh" {
+  triggers = {
+    id      = aws_autoscaling_group.refresh.launch_template[0].id
+    version = aws_autoscaling_group.refresh.launch_template[0].version
+    tag     = join(",", [for key, value in aws_autoscaling_group.refresh.tag : "${key}=${value}"])
+  }
+  
+  provisioner "local-exec" {
+    command = "python3 checkout.py"
+    
+    environment = {
+      ASG_NAME = aws_autoscaling_group.refresh.name
+    }
+  }
+}
+
 # resource "aws_launch_configuration" "bluegreen" {
 #   name_prefix     = "bluegreen-"
 #   image_id        = data.aws_ami.amzn2.id

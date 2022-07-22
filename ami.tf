@@ -10,7 +10,7 @@ data "aws_ami" "amzn2" {
   filter {
     name   = "creation-date"
     # Toggle different values to simulate upgrades and trigger refresh
-    values = ["2022-06-14T*"]
-    #values = ["2022-04-28T*"]
+    #values = ["2022-06-14T*"]
+    values = ["2022-04-28T*"]
   }
 }

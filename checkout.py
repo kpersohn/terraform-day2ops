@@ -18,19 +18,17 @@ def main(args):
     except KeyError:
         print('Trigger at least one Instance Refresh first.')
         sys.exit(os.EX_UNAVAILABLE)
-    
-    refresh_id = refresh['InstanceRefreshId']
 
     while refresh['Status'] not in ['Successful', 'Failed', 'Cancelled']: 
         print(
-            f"Instance Refresh {refresh['Status']}"
+            f"Instance Refresh {refresh['Status']} "
             f"[{refresh.get('PercentageComplete', 0)}%]: "
             f"{refresh.get('StatusReason', '')}"
         )
         time.sleep(5)
         refresh = autoscaling.describe_instance_refreshes(
             AutoScalingGroupName=asg_name, 
-            InstanceRefreshIds=[refresh_id]
+            InstanceRefreshIds=[refresh['InstanceRefreshId']]
         )['InstanceRefreshes'][0]
 
     print(f"Instance Refresh {refresh['Status']} at {refresh['EndTime']}")
